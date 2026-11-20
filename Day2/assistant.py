@@ -14,6 +14,8 @@ print("*" * 40)
 print("        My AI Assistant")
 print("*" * 40)
 
+messages = []
+
 while True:
     user_input = input("\nYou: ").strip()
 
@@ -21,12 +23,21 @@ while True:
         print("\nAI: Goobye! Have a great day.")
         break
 
-    response = client.chat.completions.create(model=os.getenv("MODEL"),
-        messages = [
+    # append the user input to the messages list
+    messages.append(
         {
             "role": "user",
             "content": user_input
         }
-    ])
+    )
 
-    Console().print("\nAI:",Markdown(response.choices[0].message.content))
+    response = client.chat.completions.create(model=os.getenv("MODEL"), messages = messages)
+    ai_reply = response.choices[0].message.content
+    Console().print("\nAI:",Markdown(ai_reply))
+
+    messages.append(
+        {
+            "role": "assistant",
+            "content": ai_reply
+        }
+    )
